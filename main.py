@@ -13,6 +13,12 @@ logging.basicConfig(
 MESSAGE = """На сайте {city} ({db}, {server}) нет новостей за последний день."""
 
 
+def escape_markdown(text: str) -> str:
+    # The regex matches either * or _ and replaces them
+    # with a backslash + the character.
+    return re.sub(r"([*_])", r"\\\1", text)
+
+
 async def send_notification(db):
     """Send a notification if no news are found in any database."""
     city = [city for city in DATABASES if city["db"] == db][0]
@@ -22,7 +28,7 @@ async def send_notification(db):
                 NOTIFY_URL,
                 json={
                     "message": MESSAGE.format(
-                        city=city["name"], db=city["db"], server=SERVER
+                        city=city["name"], db=escape_markdown(city["db"]), server=SERVER
                     ),
                     "password": NOTIFY_PASSWORD,
                 },
