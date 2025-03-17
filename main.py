@@ -63,8 +63,10 @@ async def main():
                 ok = False
             else:
                 logging.info(f"{result[0]} - {result[1]} news found")
-        else:
+        if ok:
             logging.info("News found, no notification needed.")
+        else:
+            logging.info("Some servers don't have news.")
 
         logging.info(f"Sleeping for {CHECK_INTERVAL} seconds...")
         await asyncio.sleep(CHECK_INTERVAL)
