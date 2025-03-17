@@ -58,11 +58,10 @@ async def main():
 
         ok = True
         for result in results:
+            logging.info(f"{result[0]} - {result[1]} news found")
             if result[1] == 0:
                 await send_notification(result[0])
                 ok = False
-            else:
-                logging.info(f"{result[0]} - {result[1]} news found")
         if ok:
             logging.info("News found, no notification needed.")
         else:
