@@ -39,7 +39,7 @@ async def check_database(db):
         WHERE "createdAt" >= NOW() - INTERVAL '24 hours';
     """
     try:
-        async with aiopg.connect(dsn=DSN.format(db)) as conn:
+        async with aiopg.connect(dsn=DSN.format(dbname=db)) as conn:
             async with conn.cursor() as cur:
                 await cur.execute(query)
                 count = await cur.fetchone()
@@ -56,12 +56,13 @@ async def main():
         tasks = [check_database(db["db"]) for db in DATABASES]
         results = await asyncio.gather(*tasks)
 
+        ok = True
         for result in results:
             if result[1] == 0:
                 await send_notification(result[0])
-        if all(count == 0 for count in results):
-            logging.info("No news found in any database, sending notification.")
-            await send_notification()
+                ok = False
+            else:
+                logging.info(f"{result[0]} - News found")
         else:
             logging.info("News found, no notification needed.")
 
