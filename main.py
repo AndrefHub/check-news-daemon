@@ -20,7 +20,7 @@ async def send_notification(db):
         try:
             async with session.post(
                 NOTIFY_URL,
-                data={
+                json={
                     "message": MESSAGE.format(
                         city=city["name"], db=city["db"], server=SERVER
                     ),
